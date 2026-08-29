@@ -1,8 +1,10 @@
 # Third-party notices
 
-The optional client installs `boto3` from its normal package source. It is not
-vendored here and remains governed by its own license.
+This repository does not redistribute third-party papers, archived web pages,
+external MATLAB toolboxes, or sample-image collections.
 
-References to Amazon Web Services, Amazon Bedrock, Anthropic, Claude, MATLAB,
-MathWorks, GitHub, and other names are descriptive only. All trademarks and
-service marks belong to their respective owners.
+MATLAB is a separate proprietary product of MathWorks. Its presence is not
+granted or implied by this repository's MIT License.
+
+Product and organization names used descriptively in this repository remain
+the property of their respective owners.

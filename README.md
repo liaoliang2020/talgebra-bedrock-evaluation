@@ -1,78 +1,99 @@
-# T-Algebra Bedrock Evaluation
+# T-Algebra MATLAB Toolkit
 
-[![Public readiness](https://github.com/liaoliang2020/talgebra-bedrock-evaluation/actions/workflows/public-readiness.yml/badge.svg)](https://github.com/liaoliang2020/talgebra-bedrock-evaluation/actions/workflows/public-readiness.yml)
+[![Repository checks](https://github.com/liaoliang2020/talgebra-matlab-toolkit/actions/workflows/repository-checks.yml/badge.svg)](https://github.com/liaoliang2020/talgebra-matlab-toolkit/actions/workflows/repository-checks.yml)
 
-This is the public project page for a proposed, low-volume evaluation of
-Anthropic Claude Fable 5 through Amazon Bedrock. The intended use is a
-human-supervised mathematical research and coding assistant for generalized
-linear algebra, tensor computation, and MATLAB research software.
+T-Algebra MATLAB Toolkit is a compact research-software project for numerical
+experiments with t-scalars, t-matrices, multidimensional Fourier transforms,
+and spectral-slice matrix computations. The public tree deliberately starts
+with a small, testable core so that the definitions and numerical assumptions
+remain easy to inspect.
 
-This repository is deliberately small. It contains the public use-case
-statement, data boundary, least-privilege IAM example, credential-free client
-tests, and a minimal Python client. It does not contain a manuscript, private
-research notes, personal data, AWS credentials, customer data, or the complete
-MATLAB research codebase.
+## Mathematical idea
 
-## Intended evaluation
+A t-scalar is represented by an array whose leading dimensions have shape
+`tsize`. Its product is multidimensional circular convolution. If
+\(\mathcal F\) denotes the Fourier transform over the t-scalar dimensions,
+then
 
-The model may be asked to:
+\[
+a \circ b = \mathcal F^{-1}\!\left(\mathcal F(a)\odot\mathcal F(b)\right).
+\]
 
-- explain approved, non-sensitive algorithm excerpts;
-- propose synthetic numerical tests;
-- check dimensions and assumptions in small MATLAB functions;
-- help prepare reproducible experiments with synthetic inputs; and
-- summarize results for a human researcher.
+A t-matrix stores one t-scalar in each matrix entry. Fourier transformation
+turns t-matrix multiplication and decomposition into independent ordinary
+matrix operations on spectral slices. The included t-SVD follows exactly this
+pattern: transform, compute an economy-size SVD on each slice, and transform
+the factors back.
 
-The model will not make medical, legal, financial, employment, or other
-high-impact decisions. A human remains responsible for every mathematical
-claim and software change.
+More detail is available in [the algorithm notes](docs/ALGORITHM_NOTES.md).
 
-See the [complete use-case statement](docs/USE_CASE.md),
-[data-handling boundary](docs/DATA_HANDLING.md), and
-[IAM and account checklist](docs/IAM_AND_ACCOUNT_SETUP.md).
+## Included core
 
-## Privacy boundary
+- `tscalar/E_T.m`: multiplicative identity for the t-scalar convolution;
+- `tscalar/tproduct.m`: t-scalar product;
+- `tmatrix/tmultiplication.m`: t-matrix multiplication;
+- `tmatrix/tctranspose.m`: conjugate transpose of a t-matrix;
+- `tmatrix/tsvd.m`: spectral-slice t-SVD;
+- `examples/quickstart_tsvd.m`: deterministic reconstruction example; and
+- `tests/run_smoke_tests.m`: identity and reconstruction checks.
 
-Claude Fable 5 currently requires the Amazon Bedrock retention mode
-`provider_data_share`. AWS documents that prompts and completions may be shared
-with Anthropic and retained for up to 30 days for trust and safety. Initial
-inputs are therefore restricted to public documentation, explicitly approved
-source excerpts, and synthetic data.
+## Quick start
 
-The example never changes an AWS account's retention setting. A live call also
-requires the explicit local option `--acknowledge-provider-data-share`.
-
-## Credential-free verification
-
-Python 3.10 or later is required.
+Clone the repository and start MATLAB in the project directory:
 
 ```bash
-python -m pip install -r aws_bedrock_demo/requirements.txt
-python aws_bedrock_demo/invoke_fable5.py --dry-run
-python -m unittest discover -s tests_python -v
+git clone https://github.com/liaoliang2020/talgebra-matlab-toolkit.git
+cd talgebra-matlab-toolkit
+```
+
+Then run:
+
+```matlab
+run("examples/quickstart_tsvd.m")
+run("tests/run_smoke_tests.m")
+```
+
+Both scripts generate deterministic synthetic arrays. They do not download a
+dataset or require a bundled data file.
+
+## Requirements
+
+- MATLAB R2021a or later is recommended;
+- base functions including `fftn`, `ifftn`, `fft`, `ifft`, and `svd`; and
+- Python 3.10 or later only for the repository-content safety check.
+
+No add-on toolbox is required by the included core.
+
+## Reproducibility and scope
+
+The smoke test verifies the t-scalar identity and checks that a synthetic
+t-matrix is reconstructed from its t-SVD to a relative error below
+\(10^{-10}\). Continuous integration runs the same test on a hosted MATLAB
+environment and scans the public tree for credential-like or identifying
+material.
+
+This repository is a research prototype, not a production numerical library.
+It currently focuses on correctness and inspectability rather than exhaustive
+input handling, performance benchmarking, or safety-critical use. See
+[the reproducibility guide](docs/REPRODUCIBILITY.md) before interpreting
+experimental results.
+
+## Privacy and security
+
+The public tree contains only source code, documentation, and synthetic tests.
+Do not commit credentials, personal contact details, unpublished manuscripts,
+restricted datasets, local paths, or binary archives. Run the following before
+publishing a change:
+
+```bash
 python tools/check_public_tree.py
 ```
 
-The dry run and tests neither load AWS credentials nor contact AWS. Do not add
-AWS keys or a live Bedrock call to GitHub Actions.
+See [SECURITY.md](SECURITY.md) for private vulnerability reporting and
+credential-response guidance.
 
-## Live evaluation
+## License and citation
 
-Only an AWS account owner or an authorized operator should complete the
-first-time-use form, review the applicable terms, configure retention, and
-assign a short-lived runtime role. After that account-side work, the built-in
-synthetic prompt can be invoked manually:
-
-```bash
-export AWS_REGION=us-east-1
-export BEDROCK_MODEL_ID=anthropic.claude-fable-5
-python aws_bedrock_demo/invoke_fable5.py \
-  --acknowledge-provider-data-share
-```
-
-No prompt text or model output is written to the repository by the client.
-
-## Status
-
-This is an evaluation scaffold, not a production service. It is not affiliated
-with or endorsed by Amazon Web Services, Anthropic, MathWorks, or GitHub.
+Project source is released under the [MIT License](LICENSE). Cite the exact
+revision used in a numerical experiment; a neutral software citation is
+provided in [CITATION.cff](CITATION.cff).

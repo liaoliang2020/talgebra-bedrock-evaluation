@@ -33,12 +33,12 @@ FORBIDDEN_NAMES = {
     "id_rsa",
 }
 SENSITIVE_PATTERNS = {
-    "AWS access key ID": re.compile(rb"(?:AKIA|ASIA)[A-Z0-9]{16}"),
-    "GitHub token": re.compile(
+    "cloud access key ID": re.compile(rb"(?:AKIA|ASIA)[A-Z0-9]{16}"),
+    "repository access token": re.compile(
         rb"(?:github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{20,})"
     ),
     "private key": re.compile(rb"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----"),
-    "AWS account ID": re.compile(rb"(?<!\d)\d{12}(?!\d)"),
+    "12-digit account identifier": re.compile(rb"(?<!\d)\d{12}(?!\d)"),
     "email address": re.compile(
         rb"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.IGNORECASE
     ),

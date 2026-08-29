@@ -1,40 +1,41 @@
 # Security policy
 
-## Reporting
+## Supported version
 
-Use GitHub private vulnerability reporting when available. Do not put an
-unredacted credential, personal data, account identifier, or exploit in a
-public issue.
+Security and privacy fixes apply to the current `main` branch.
 
-If a credential is exposed, revoke or rotate it before rewriting history.
+## Private reporting
 
-## Repository boundary
+Use the repository's private vulnerability-reporting or private
+security-advisory mechanism. Do not place credentials, personal data, or an
+unredacted exploit in a public issue.
 
-This repository must not contain AWS access keys, Bedrock bearer tokens,
-session tokens, `.env` files, private keys, passwords, account IDs, resource
-ARNs tied to an account, personal contact details, prompt logs, or customer
-data.
+If a credential has been committed, revoke or rotate it first. Rewriting Git
+history is not a substitute for revocation.
 
-Credentials for local evaluation must come from the standard AWS credential
-provider chain. Prefer a short-lived IAM role and never configure a live AWS
-credential in GitHub Actions.
+## Public-tree boundary
 
-## Fable 5 data boundary
+This repository must not contain:
 
-The example is limited to public documentation, explicitly approved source
-excerpts, and synthetic data. Do not submit personal, confidential, regulated,
-licensed, export-controlled, or classified material.
+- passwords, access tokens, private keys, or `.env` files;
+- personal names, email addresses, affiliations, or location information;
+- unpublished manuscripts or restricted datasets;
+- local filesystem paths or machine-specific configuration; or
+- binary archives and exported browser pages.
 
-The client requires `--acknowledge-provider-data-share` for every live call and
-does not configure the AWS account's retention mode. Review the current AWS
-terms, model card, regional availability, and retention documentation before
-each deployment.
+Examples and tests must use deterministic synthetic arrays. No test should
+open a network connection or require a secret.
 
 ## Local checks
 
+Run:
+
 ```bash
-python -m py_compile aws_bedrock_demo/invoke_fable5.py tools/check_public_tree.py
-python aws_bedrock_demo/invoke_fable5.py --dry-run
-python -m unittest discover -s tests_python -v
 python tools/check_public_tree.py
+```
+
+Then execute the MATLAB smoke test:
+
+```matlab
+run("tests/run_smoke_tests.m")
 ```
