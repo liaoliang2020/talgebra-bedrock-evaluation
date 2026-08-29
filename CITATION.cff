@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If this evaluation scaffold supports your work, cite the exact repository revision used."
+title: "T-Algebra Bedrock Evaluation"
+type: software
+authors:
+  - name: "T-Algebra Project Contributors"
+version: "0.1.0"
+date-released: 2026-08-29
+repository-code: "https://github.com/liaoliang2020/talgebra-bedrock-evaluation"
+url: "https://github.com/liaoliang2020/talgebra-bedrock-evaluation"
+license: MIT
+keywords:
+  - Amazon Bedrock
+  - Claude Fable 5
+  - research software
+  - numerical linear algebra
+  - responsible AI evaluation
